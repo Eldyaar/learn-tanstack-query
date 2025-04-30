@@ -1,21 +1,10 @@
-import { keepPreviousData, useQuery } from '@tanstack/react-query'
-import { FC, useState } from 'react'
-import { todoListApi } from './api'
+import { FC } from 'react'
+import { useTodoList } from './use-todo-list'
 
 export const TodoList: FC = () => {
-	const [page, setPage] = useState(1)
+	const { todoItems, isLoading, error, cursor } = useTodoList()
 
-	const {
-		data: todoItems,
-		error,
-		isPending,
-	} = useQuery({
-		queryKey: ['tasks', 'list', { page }],
-		queryFn: meta => todoListApi.getTodoList({ page }, meta),
-		placeholderData: keepPreviousData,
-	})
-
-	if (isPending) {
+	if (isLoading) {
 		return <div>LOADING...</div>
 	}
 
@@ -26,27 +15,14 @@ export const TodoList: FC = () => {
 	return (
 		<div className='p-5 mx-auto max-w-[1200px] mt-10'>
 			<h1 className='text-3xl font-bold underline mb-5'>TodoList</h1>
-			<div className='flex flex-col gap-4 mb-5'>
-				{todoItems?.data.map(todo => (
+			<div className={'flex flex-col gap-4 mb-5'}>
+				{todoItems?.map(todo => (
 					<div key={todo.id} className='border border-slate-300 rounded p-3'>
 						{todo.text}
 					</div>
 				))}
 			</div>
-			<div className='flex gap-4'>
-				<button
-					onClick={() => setPage(p => Math.max(p - 1, 1))}
-					className='p-3 rounded border border-teal-500'
-				>
-					prev
-				</button>
-				<button
-					onClick={() => setPage(p => Math.min(p + 1, todoItems.pages))}
-					className='p-3 rounded border border-teal-500'
-				>
-					next
-				</button>
-			</div>
+			{cursor}
 		</div>
 	)
 }
