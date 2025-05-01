@@ -1,4 +1,4 @@
-import { infiniteQueryOptions, queryOptions } from '@tanstack/react-query'
+import { queryOptions } from '@tanstack/react-query'
 import { api } from '../../shared/api/axios'
 
 export type PaginatedResult<T> = {
@@ -18,33 +18,35 @@ export type TodoDto = {
 }
 
 export const todoListApi = {
-	getTodoList: async (
-		{ page }: { page: number },
-		{ signal }: { signal: AbortSignal }
-	): Promise<PaginatedResult<TodoDto>> => {
-		const { data } = await api.get<PaginatedResult<TodoDto>>(
-			`/tasks?_page=${page}`,
-			{
-				signal,
-			}
-		)
+	baseKey: 'tasks',
+
+	getTodoList: async ({
+		signal,
+	}: {
+		signal: AbortSignal
+	}): Promise<TodoDto[]> => {
+		const { data } = await api.get<TodoDto[]>('/tasks', { signal })
 		return data
 	},
 
-	getTodoListQueryOptions: ({ page }: { page: number }) => {
+	getTodoListQueryOptions: () => {
 		return queryOptions({
-			queryKey: ['tasks', 'list', { page }],
-			queryFn: meta => todoListApi.getTodoList({ page }, meta),
+			queryKey: [todoListApi.baseKey, 'list'],
+			queryFn: meta => todoListApi.getTodoList({ signal: meta.signal }),
 		})
 	},
 
-	getTodoListInfinityQueryOptions: () => {
-		return infiniteQueryOptions({
-			queryKey: ['tasks', 'list'],
-			queryFn: meta => todoListApi.getTodoList({ page: meta.pageParam }, meta),
-			initialPageParam: 1,
-			getNextPageParam: result => result.next,
-			select: result => result.pages.flatMap(page => page.data),
-		})
+	createTodo: async (todo: TodoDto) => {
+		const { data } = await api.post('/tasks', todo)
+		return data
+	},
+
+	updateTodo: async (todo: Partial<TodoDto> & { id: string }) => {
+		const { data } = await api.patch(`/tasks/${todo.id}`, todo)
+		return data
+	},
+
+	deleteTodo: async (id: string) => {
+		return await api.delete(`/tasks/${id}`)
 	},
 }
