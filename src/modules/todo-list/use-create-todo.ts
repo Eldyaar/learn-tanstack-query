@@ -22,6 +22,7 @@ export const useCreateTodo = () => {
 			id: nanoid(),
 			done: false,
 			text,
+			userId: '1',
 		})
 
 		e.currentTarget.reset()

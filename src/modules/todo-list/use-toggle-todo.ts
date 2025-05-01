@@ -36,10 +36,7 @@ export const useToggleTodo = () => {
 	})
 
 	const toggleTodo = (id: string, done: boolean) => {
-		updateTodoMutation.mutate({
-			id,
-			done: !done,
-		})
+		updateTodoMutation.mutate({ id, done: !done })
 	}
 
 	return { toggleTodo }
