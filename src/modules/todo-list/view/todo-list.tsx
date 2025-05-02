@@ -1,26 +1,38 @@
 import { FC } from 'react'
-import { useCreateTodo } from './use-create-todo'
-import { useDeleteTodo } from './use-delete-todo'
-import { useTodoList } from './use-todo-list'
-import { useToggleTodo } from './use-toggle-todo'
+import { useUser } from '../../auth/model/use-user'
+import { useCreateTodo } from '../model/use-create-todo'
+import { useDeleteTodo } from '../model/use-delete-todo'
+import { useTodoList } from '../model/use-todo-list'
+import { useToggleTodo } from '../model/use-toggle-todo'
 
 export const TodoList: FC = () => {
 	const { todoItems, isLoading, error } = useTodoList()
 	const createTodo = useCreateTodo()
 	const deleteTodo = useDeleteTodo()
 	const { toggleTodo } = useToggleTodo()
+	const useQuery = useUser()
 
 	if (isLoading) {
-		return <div>LOADING...</div>
+		return (
+			<div className='text-center text-orange-400 font-bold text-2xl mt-20'>
+				LOADING...
+			</div>
+		)
 	}
 
 	if (error) {
-		return <div>error: {JSON.stringify(error)}</div>
+		return (
+			<div className='text-center text-rose-500 font-bold text-2xl mt-20'>
+				error: {JSON.stringify(error)}
+			</div>
+		)
 	}
 
 	return (
-		<div className='p-5 mx-auto max-w-[1200px] mt-10'>
-			<h1 className='text-3xl font-bold underline mb-5'>TodoList</h1>
+		<>
+			<h1 className='text-3xl font-bold underline mb-5'>
+				TodoList. {useQuery.data?.login}
+			</h1>
 
 			<form className='flex gap-2 mb-5' onSubmit={createTodo.handleCreate}>
 				<input
@@ -65,6 +77,6 @@ export const TodoList: FC = () => {
 					</div>
 				))}
 			</div>
-		</div>
+		</>
 	)
 }

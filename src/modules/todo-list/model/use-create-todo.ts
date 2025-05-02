@@ -1,6 +1,6 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { nanoid } from 'nanoid'
-import { todoListApi } from './api'
+import { todoListApi } from '../api/api'
 
 export const useCreateTodo = () => {
 	const queryClient = useQueryClient()

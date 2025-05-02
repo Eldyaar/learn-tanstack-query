@@ -1,15 +1,5 @@
 import { queryOptions } from '@tanstack/react-query'
-import { api } from '../../shared/api/axios'
-
-export type PaginatedResult<T> = {
-	data: T[]
-	first: number
-	items: number
-	last: number
-	next: number | null
-	prev: number | null
-	pages: number
-}
+import { api } from '../../../shared/api/axios'
 
 export type TodoDto = {
 	id: string
