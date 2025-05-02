@@ -11,6 +11,11 @@ export const useCreateTodo = () => {
 
 		const text = String(formData.get('text') ?? '')
 
+		if (text.trim() === '') {
+			alert('Поле не может быть пустым')
+			return
+		}
+
 		appDispatch(createTodoThunk(text))
 
 		e.currentTarget.reset()
