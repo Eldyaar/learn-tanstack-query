@@ -17,7 +17,6 @@ export const authApi = {
 				const { data } = await api.get<UserDto>(`/users/${id}`, {
 					signal: meta.signal,
 				})
-				console.log('find by id user: ', data)
 				return data
 			},
 		})
@@ -34,7 +33,6 @@ export const authApi = {
 			`/users?login=${login}&password=${password}`,
 			{}
 		)
-		console.log('login user: ', data)
 		return data[0]
 	},
 }
